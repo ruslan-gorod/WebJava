@@ -1,11 +1,14 @@
+
 import java.util.Objects;
 
 public class User {
+    private int Id;
     private String name;
     private String login;
     private String password;
 
-    public User(String name, String login, String password) {
+    public User(int id, String name, String login, String password) {
+        this.Id = id;
         this.name = name;
         this.login = login;
         this.password = password;
@@ -13,6 +16,14 @@ public class User {
 
     public User() {
 
+    }
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
     }
 
     public String getName() {
@@ -44,8 +55,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) &&
-                Objects.equals(login, user.login) &&
+        return Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password);
     }
 
@@ -57,7 +67,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';

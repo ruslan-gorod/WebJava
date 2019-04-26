@@ -1,3 +1,4 @@
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,28 +19,41 @@ public class MyServlet extends HttpServlet {
         String password = req.getParameter("password");
         String name = req.getParameter("nameUser");
         PrintWriter out = resp.getWriter();
-        User userDb = new User();
-        if (name == null) {
-            //users.add(new User("Ruslan", "ruslan-gorod", "123456"));
-            for (User user : users) {
-                if (user.getLogin().equals(login) & user.getPassword().equals(password)) {
-                    userDb = user;
+        User userDb = getUser(login, password);
+        if (userDb.getName() != null) {
+            out.println("Welcome, " + userDb.getName());
+        } else if (name == null) {
+            registration(req, resp);
+        } else {
+            if (!getUser(login, password).equals(userDb)) {
+                registration(req, resp);
+            } else {
+                userDb.setId(users.size() + 1);
+                userDb.setName(name);
+                userDb.setLogin(login);
+                userDb.setPassword(password);
+                users.add(userDb);
+                out.println("You are registered");
+                out.println("Welcome, " + userDb.getName());
+                for (User u : users) {
+                    out.println(u);
                 }
             }
-            if (userDb.getName() != null) {
-                out.println("Welcome, " + userDb.getName());
-            } else {
-                RequestDispatcher requestDispatcher = req.getRequestDispatcher("/registration.jsp");
-                requestDispatcher.include(req, resp);
-            }
-        } else {
-            userDb = new User(name, login, password);
-            if (!users.contains(userDb)) {
-                users.add(userDb);
-            }
-            out.println("Welcome, " + userDb.getName());
-            out.println("Count users in system - " + users.size());
         }
     }
 
+    private User getUser(String login, String password) {
+        User us = new User();
+        for (User user : users) {
+            if (user.getLogin().equals(login) && user.getPassword().equals(password)) {
+                us = user;
+            }
+        }
+        return us;
+    }
+
+    private void registration(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/registration.jsp");
+        requestDispatcher.include(req, resp);
+    }
 }
